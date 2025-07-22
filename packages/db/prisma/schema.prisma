@@ -1,0 +1,63 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          Int       @id   @default(autoincrement()) 
+  email       String  @unique
+  name        String?
+  auth_type   AuthType   
+  role        Role        @default(User)
+  created_at  DateTime    @default(now())
+  on_ramping  OnRamping[]
+  balance     Balance[]
+}
+enum AuthType {
+  Google
+}
+enum Role {
+  Admin
+  User
+  Merchant
+}
+
+model OnRamping {
+  id          Int       @id   @default(autoincrement())
+  user_id     Int       @unique
+  user        User      @relation(fields: [user_id], references: [id])
+  OnRampingStatus OnRampingStatus
+  token     String       @unique
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @updatedAt
+  provider    String
+}
+
+enum OnRampingStatus {
+  Processing
+  Approved
+  Rejected
+}
+
+model Balance{
+  id          Int       @id   @default(autoincrement())
+  user_id     Int       @unique
+  user        User      @relation(fields: [user_id], references: [id])
+  amount      Float     @default(0)
+  currency    currency
+  locked      Int?
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @updatedAt
+}
+
+enum currency {
+  USD
+  EUR
+  GBP
+  INR
+}

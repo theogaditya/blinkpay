@@ -1,0 +1,25 @@
+{
+  "name": "bankServer",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "dev": "tsc -b && node dist/index.js"
+  },
+  "dependencies": {
+    "@repo/db": "*",
+    "axios": "^1.10.0",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "prisma": "^6.11.1",
+    "typescript": "^5.8.3"
+  },
+  "devDependencies": {
+    "@types/axios": "^0.9.36",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/jsonwebtoken": "^9.0.10",
+    "typescript": "^5.8.2"
+  }
+}
