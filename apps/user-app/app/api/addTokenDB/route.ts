@@ -38,6 +38,7 @@ export async function POST(req: Request) {
         data: {                         
           user_id:          userId,
           token:            Xtoken,
+          amount :          (Number(amount)),
           OnRampingStatus:  "Processing",
           created_at:       new Date(),
           updated_at:       new Date(),

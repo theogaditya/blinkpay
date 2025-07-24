@@ -102,6 +102,7 @@ app.post("/api/webhook/sender", async (req, res) => {
         Authorization: `Bearer ${Xtoken}`,
       }
     });
+    res.status(200)
   }catch(error){
     console.error("Error in webhook call",error);
   }

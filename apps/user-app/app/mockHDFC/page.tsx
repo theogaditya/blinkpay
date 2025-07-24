@@ -1,14 +1,15 @@
 "use client";
 import Head from 'next/head';
 import axios from 'axios';
-
+import { useState } from 'react';
 
 export default function NetBankingLogin() {
 
 async function addMoneyOnClick(event:any) {
   event.preventDefault();
+
   try {
-    await axios.post('http://localhost:3004/api/webhook/sender');
+    axios.post('http://localhost:3004/api/webhook/sender');
   } catch (error) {
     console.error("Error sending amount while adding money:", error);
   }
@@ -22,6 +23,7 @@ async function addMoneyOnClick(event:any) {
         <title>HDFC Bank NetBanking</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
+
 
       {/* Main Content */}
       <main className="flex-grow container mx-auto px-4 py-8 max-w-4xl">

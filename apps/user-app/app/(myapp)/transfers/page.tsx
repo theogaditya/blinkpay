@@ -1,4 +1,4 @@
-// app/transfers/page.tsx
+
 "use client";
 
 import React from "react";
@@ -6,11 +6,12 @@ import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 import { ArrowDown, ArrowUp, Lock, Plus, Send } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 const axios = require('axios').default;
 
 const TransfersPage = () => {
   const [amountState, setAmount] = useState<string>(''); 
+  const [balance, setBalance] = useState<number>(0);
 
   function addMoneyOnClick() {
     try {
@@ -22,6 +23,25 @@ const TransfersPage = () => {
     }
     window.location.replace('mockHDFC');
   }
+
+useEffect(() => {
+  const fetchBalance = async () => {
+    try {
+      const response = await axios.get("http://localhost:3000/api/balance");
+      const balances = response.data;
+      if (balances.length > 0) {
+        setBalance(balances[0].amount);
+        console.log("🔐 Received balance:", balances[0].amount);
+      } else {
+        console.warn("No balance records found for user");
+      }
+    } catch (error) {
+      console.error("Error fetching balance:", error);
+    }
+  };
+
+  fetchBalance();
+}, []);
 
   return (
     <div className="min-h-screen bg-black text-white pt-24 px-4 pb-8">
@@ -86,19 +106,6 @@ const TransfersPage = () => {
 
               </div>
             </motion.div>
-
-            {/* Recent Transactions */}
-            <motion.div
-              className="bg-[#1a1a1a] rounded-2xl p-6 border border-white/10 mt-6"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.3, delay: 0.3 }}
-            >
-              <h2 className="text-xl font-semibold mb-4">Recent Transactions</h2>
-              <div className="text-center py-10 text-gray-400">
-                No Recent transactions
-              </div>
-            </motion.div>
           </div>
 
           {/* Right Column - Balance */}
@@ -114,20 +121,15 @@ const TransfersPage = () => {
 
               <div className="space-y-3">
                 <div className="flex justify-between">
-                  <span className="text-gray-400">Unlocked balance</span>
-                  <span>0 NR</span>
-                </div>
-
-                <div className="flex justify-between">
                   <span className="text-gray-400 flex items-center gap-1">
                     <Lock size={14} /> Total Locked Balance
                   </span>
-                  <span>0 NR</span>
+                  <span>{balance} INR</span>
                 </div>
 
                 <div className="flex justify-between pt-3 border-t border-gray-800 mt-3">
                   <span className="text-gray-200 font-medium">Total Balance</span>
-                  <span className="font-medium">0 NR</span>
+                  <span className="font-medium">{balance} INR</span>
                 </div>
               </div>
             </motion.div>
