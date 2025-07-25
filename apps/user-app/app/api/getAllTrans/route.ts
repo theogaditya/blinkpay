@@ -37,7 +37,6 @@ export const GET = auth(async function GET(req) {
       console.error("Error in getAllTrans route", error);
       return new Response("Internal server error", { status: 500 });
     }
-     console.log("🔐 Received result:", result);
 
     return NextResponse.json(result, { status: 200 });
   } else {
