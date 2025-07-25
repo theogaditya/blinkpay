@@ -10,7 +10,6 @@ dotenv.config();
 app.use(express.json());
 
 const prisma = new PrismaClient();
-const NEXT_BACKEND = process.env.NEXT_BACKEND;
 const secret = process.env.JWT_SECRET || "your-secret-key";
 
 app.use(
@@ -79,9 +78,7 @@ app.post("/webhook", async (req, res) => {
         }
 
         const onRamping = await tx.onRamping.updateMany({
-          where: { token: Xtoken,
-            OnRampingStatus: OnRampingStatus.Processing
-          },
+          where: { token: Xtoken, OnRampingStatus: OnRampingStatus.Processing },
           data: {
             OnRampingStatus: OnRampingStatus.Approved,
             updated_at: new Date(),
@@ -92,10 +89,11 @@ app.post("/webhook", async (req, res) => {
           throw new Error("OnRamping not found during webhook processing");
         }
 
-          if (onRamping.count === 0) {
-    // either token not found or already approved
-    throw new Error("This token has already been processed or is invalid.");
-  }
+        if (onRamping.count === 0) {
+          throw new Error(
+            "This token has already been processed or is invalid."
+          );
+        }
 
         const balance = await tx.balance.upsert({
           where: { user_id: userId },
@@ -114,7 +112,6 @@ app.post("/webhook", async (req, res) => {
 
         console.log("Balance updated:", balance);
       });
-
     } catch (error) {
       console.error("Error processing prisma webhook payload:", error);
       return res
@@ -122,12 +119,10 @@ app.post("/webhook", async (req, res) => {
         .json({ status: "error", message: "payload - prisma call webhook" });
     }
 
-    res
-      .status(200)
-      .json({
-        status: "success",
-        message: "Webhook received and balance updated",
-      });
+    res.status(200).json({
+      status: "success",
+      message: "Webhook received and balance updated",
+    });
   } catch (error) {
     console.error("Error processing webhook route", error);
     res

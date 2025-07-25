@@ -43,3 +43,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+client_secret_97618793412-gngf60ud1kjk09laurjucn6luh2nls2p.apps.googleusercontent.com
+client_secret_97618793412-gngf60ud1kjk09laurjucn6luh2nls2p.apps.googleusercontent.com.json

@@ -5,11 +5,14 @@ import cors from "cors";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { isExportDeclaration } from "typescript";
 import axios from "axios";
+import dotenv from "dotenv"
+dotenv.config()
 
 const prisma = new PrismaClient();
-
 app.use(express.json());
 
+const NEXT_BACKEND=process.env.NEXT_BACKEND;
+const WEBHOOK=process.env.WEBHOOK;
 let Xtoken:string; 
 
 app.use(
@@ -78,7 +81,7 @@ app.post("/api/receive", async (req, res) => {
     return res.status(500).json({ status: "error", message: "Internal server  - receive route" });
   }
   try{
-    await axios.post('http://localhost:3000/api/addTokenDB', {
+    await axios.post(`${NEXT_BACKEND}/api/addTokenDB`, {
       token: Xtoken,
     }, {
       headers: {
@@ -94,7 +97,7 @@ app.post("/api/receive", async (req, res) => {
 app.post("/api/webhook/sender", async (req, res) => {
 
   try{
-    await axios.post('http://localhost:3003/webhook', {
+    await axios.post(`${WEBHOOK}/webhook`, {
       token: Xtoken,
     }, {
       headers: {

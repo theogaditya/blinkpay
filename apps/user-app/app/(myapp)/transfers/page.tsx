@@ -15,7 +15,7 @@ const TransfersPage = () => {
 
   function addMoneyOnClick() {
     try {
-      axios.post('http://localhost:3000/api/addMoney', {
+      axios.post('/api/addMoney', {
         amount: amountState,
       })
     } catch (error) {
@@ -27,7 +27,7 @@ const TransfersPage = () => {
 useEffect(() => {
   const fetchBalance = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/balance");
+      const response = await axios.get("/api/balance");
       const balances = response.data;
       if (balances.length > 0) {
         setBalance(balances[0].amount);

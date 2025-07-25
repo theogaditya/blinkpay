@@ -9,7 +9,7 @@ async function addMoneyOnClick(event:any) {
   event.preventDefault();
 
   try {
-    axios.post('http://localhost:3004/api/webhook/sender');
+    axios.post('/api/mockHDFC');
   } catch (error) {
     console.error("Error sending amount while adding money:", error);
   }

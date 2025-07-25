@@ -4,6 +4,8 @@ import jwt from "jsonwebtoken";
 import { NextResponse } from "next/server";
 import axios from "axios";
 
+const BANK_SERVER=process.env.BANK_SERVER;
+
 export async function POST(req: Request) {
   const secret = process.env.JWT_SECRET || "your-secret-key";
   try {
@@ -29,7 +31,7 @@ if (!userID) {
 );
     console.log("Generated token:", token);
 
-        await axios.post("http://localhost:3004/api/receive", {
+        await axios.post(`${BANK_SERVER}/api/receive`, {
       token,
     }, {
       headers: {

@@ -19,7 +19,7 @@ const AllTransPage = () => {
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/api/getAllTrans"); 
+        const response = await axios.get("/api/getAllTrans"); 
         setTransactions(response.data as Transaction[]);
       } catch (error) {
         console.error("Error fetching transactions:", error);
