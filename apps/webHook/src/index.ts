@@ -3,7 +3,6 @@ const app = express();
 import { OnRampingStatus, PrismaClient } from "@repo/db/client";
 import cors from "cors";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import axios from "axios";
 import dotenv from "dotenv";
 
 dotenv.config();

@@ -1,0 +1,71 @@
+name: Build and Deploy to Docker Hub
+on:
+  push:
+    branches:
+      - main
+      - adi
+jobs: 
+  build:
+    name: Build project and push to Docker Hub
+    runs-on: ubuntu-latest
+    steps: 
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERED }}
+          password: ${{ secrets.DOCKERHUB_PASS }}
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build and push bankServer
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./apps/bankServer/Dockerfile
+          push: true  
+          tags: ogadityahota/blinkpay/bankServer:latest
+
+      - name: Build and push webHook
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./apps/webHook/Dockerfile
+          push: true  
+          tags: ogadityahota/blinkpay/webHook:latest
+
+      - name: Run bankServer container
+        run: docker run -d -p 8080:3004 --name bankServer ogadityahota/blinkpay/bankServer:latest
+
+      - name: Wait for bankServer to start
+        run: sleep 5  
+
+      - name: Check /health for bankServer
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/health)
+          if [ "$STATUS" -ne 200 ]; then
+            echo "Health check failed for bankServer: $STATUS"
+            exit 1
+          fi
+
+      - name: Stop bankServer container
+        run: docker rm -f bankServer
+
+      - name: Run webhook container
+        run: docker run -d -p 9090:3003 --name webhook ogadityahota/blinkpay/webhook:latest
+
+      - name: Wait for webhook to start
+        run: sleep 5
+
+      - name: Check /health for webhook
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:9090/health)
+          if [ "$STATUS" -ne 200 ]; then
+            echo "Health check failed for webhook: $STATUS"
+            exit 1
+          fi
+
+      - name: Stop webhook container
+        run: docker rm -f webhook
+

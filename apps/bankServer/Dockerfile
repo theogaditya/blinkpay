@@ -8,9 +8,9 @@ COPY packages/db/prisma ./packages/db/prisma
 COPY packages/db/src ./packages/db/src
 COPY packages/db/.env ./packages/db/.env
 
-COPY apps/webHook/package.json apps/webHook/tsconfig.json ./apps/webHook/
-COPY apps/webHook/src ./apps/webHook/src
-COPY apps/webHook/.env ./apps/webHook/.env
+COPY apps/bankServer/package.json apps/bankServer/tsconfig.json ./apps/bankServer/
+COPY apps/bankServer/src ./apps/bankServer/src
+COPY apps/bankServer/.env ./apps/bankServer/.env
 
 
 RUN yarn install --frozen-lockfile
@@ -19,7 +19,7 @@ WORKDIR /repo/packages/db
 RUN npm run build
 RUN npx prisma generate
 
-WORKDIR /repo/apps/webHook 
+WORKDIR /repo/apps/bankServer 
 RUN npm run build
 
 FROM node:23-alpine AS runner
@@ -28,9 +28,10 @@ WORKDIR /repo
 
 COPY --from=builder /repo/node_modules ./node_modules
 
-COPY --from=builder /repo/apps/webHook/package.json ./package.json
-COPY --from=builder /repo/apps/webHook/dist ./dist
-COPY --from=builder /repo/apps/webHook/.env ./.env
+COPY --from=builder /repo/apps/bankServer/package.json ./package.json
+COPY --from=builder /repo/apps/bankServer/node_modules ./node_modules
+COPY --from=builder /repo/apps/bankServer/dist ./dist
+COPY --from=builder /repo/apps/bankServer/.env ./.env
 
 COPY --from=builder /repo/packages/db/package.json ./packages/db/package.json
 COPY --from=builder /repo/packages/db/prisma ./packages/db/prisma
@@ -38,5 +39,5 @@ COPY --from=builder /repo/packages/db/dist ./packages/db/dist
 COPY --from=builder /repo/packages/db/.env ./packages/db/.env
 
 
-EXPOSE 3003
+EXPOSE 3004
 CMD ["node", "dist/index.js"]
