@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - adi
 
 jobs: 
   build:
@@ -24,7 +25,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          file: ../apps/bankServer/Dockerfile
+          file: ./apps/bankServer/Dockerfile
           push: true  
           tags: ogadityahota/blinkpay-bankserver:latest
 
@@ -32,7 +33,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          file: ../apps/webHook/Dockerfile
+          file: ./apps/webHook/Dockerfile
           push: true  
           tags: ogadityahota/blinkpay-webhook:latest
 
@@ -40,7 +41,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          file: ../apps/user-app/Dockerfile
+          file: ./apps/user-app/Dockerfile
           push: true  
           tags: ogadityahota/blinkpay-user-app:latest
       
