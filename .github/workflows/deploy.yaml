@@ -20,19 +20,30 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Google Cloud SDK
+      - name: Set up Google Cloud SDK and activate service account
         uses: google-github-actions/setup-gcloud@v1
         with:
-          project_id:          ${{ secrets.GCP_PROJECT_ID }}
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
           service_account_key: ${{ secrets.GCP_SA_KEY }}
           export_default_credentials: true
 
-      - name: Configure Docker for Artifact Registry
-        run: |
-          gcloud auth configure-docker ${AR_HOST} --quiet
+      - name: Show active account (debug)
+        run: gcloud auth list
 
-      - name: Set up Buildx
-        uses: docker/setup-buildx-action@v2
+      - name: Configure Docker credential helper for Artifact Registry
+        run: gcloud auth configure-docker asia-docker.pkg.dev --quiet
+
+      - name: Get access token for Docker login
+        id: auth
+        run: |
+          echo "access_token=$(gcloud auth print-access-token)" >> $GITHUB_OUTPUT
+
+      - name: Docker login to Artifact Registry (fallback for buildx)
+        uses: docker/login-action@v2
+        with:
+          registry: asia-docker.pkg.dev
+          username: oauth2accesstoken
+          password: ${{ steps.auth.outputs.access_token }}
 
       - name: Build & push bankServer
         uses: docker/build-push-action@v4
