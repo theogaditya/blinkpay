@@ -38,25 +38,25 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          file:    ./apps/bankServer/Dockerfile
-          push:    true
-          tags:    |
-            ${AR_HOST}/${{ secrets.GCP_PROJECT_ID }}/${AR_REPO}/blinkpay-bankserver:latest
+          file: ./apps/bankServer/Dockerfile
+          push: true
+          tags: |
+            ${{ env.AR_HOST }}/${{ env.PROJECT_ID }}/${{ env.AR_REPO }}/blinkpay-bankserver:latest
 
       - name: Build & push webHook
         uses: docker/build-push-action@v4
         with:
           context: .
-          file:    ./apps/webHook/Dockerfile
-          push:    true
-          tags:    |
-            ${AR_HOST}/${{ secrets.GCP_PROJECT_ID }}/${AR_REPO}/blinkpay-webhook:latest
+          file: ./apps/webHook/Dockerfile
+          push: true
+          tags: |
+            ${{ env.AR_HOST }}/${{ env.PROJECT_ID }}/${{ env.AR_REPO }}/blinkpay-webhook:latest
 
       - name: Build & push user-app
         uses: docker/build-push-action@v4
         with:
           context: .
-          file:    ./apps/user-app/Dockerfile
-          push:    true
-          tags:    |
-            ${AR_HOST}/${{ secrets.GCP_PROJECT_ID }}/${AR_REPO}/blinkpay-user-app:latest
+          file: ./apps/user-app/Dockerfile
+          push: true
+          tags: |
+            ${{ env.AR_HOST }}/${{ env.PROJECT_ID }}/${{ env.AR_REPO }}/blinkpay-user-app:latest
