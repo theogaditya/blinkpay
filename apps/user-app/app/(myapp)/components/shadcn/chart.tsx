@@ -2,7 +2,13 @@
 
 import * as React from "react"
 import axios from "axios"
-import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+} from "recharts"
 
 import {
   Card,
@@ -26,18 +32,27 @@ import {
 
 export const description = "An interactive area chart"
 
-// initial empty state; we'll fill it from the API
-type Tx = {
+// your API Tx types
+type OnTx = {
   OnRampingStatus: string
   amount: number
   created_at: string
   updated_at: string
+  provider: string
+}
+type OffTx = {
+  OffRampingStatus: string
+  amount: number
+  created_at: string
+  updated_at: string
+  provider: string
 }
 
+// unified chart point
 type Point = {
   date: string
-  mobile: number
-  desktop?: number
+  mobile?: number    // incoming
+  off?: number       // outgoing (will be negative)
 }
 
 export function ChartAreaInteractive() {
@@ -47,13 +62,26 @@ export function ChartAreaInteractive() {
   React.useEffect(() => {
     async function load() {
       try {
-        const { data } = await axios.get<Tx[]>("/api/getAllTrans")
-        const formatted: Point[] = data.map((tx) => ({
+        const [onRes, offRes] = await Promise.all([
+          axios.get<OnTx[]>("/api/getAllTrans"),
+          axios.get<OffTx[]>("/api/getoffRamp"),
+        ])
+
+        const onPoints: Point[] = onRes.data.map(tx => ({
           date: tx.created_at,
           mobile: tx.amount,
-          // desktop: 0, // add if you need a second series
         }))
-        setChartData(formatted)
+
+        const offPoints: Point[] = offRes.data.map(tx => ({
+          date: tx.created_at,
+          off: -tx.amount,    // negate here
+        }))
+
+        const combined = [...onPoints, ...offPoints].sort(
+          (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+        )
+
+        setChartData(combined)
       } catch (err) {
         console.error("failed to load chart data", err)
       }
@@ -61,20 +89,17 @@ export function ChartAreaInteractive() {
     load()
   }, [])
 
-  // filter by selected time range
   const filteredData = React.useMemo(() => {
     const now = new Date()
-    let days = timeRange === "7d" ? 7 : timeRange === "30d" ? 30 : 90
+    const days = timeRange === "7d" ? 7 : timeRange === "30d" ? 30 : 90
     const cutoff = new Date(now)
     cutoff.setDate(cutoff.getDate() - days)
-
-    return chartData.filter((pt) => new Date(pt.date) >= cutoff)
+    return chartData.filter(pt => new Date(pt.date) >= cutoff)
   }, [chartData, timeRange])
 
   const chartConfig = {
-    visitors: { label: "Visitors" },
-    desktop: { label: "Desktop", color: "var(--chart-1)" },
-    mobile: { label: "Mobile", color: "var(--chart-2)" },
+    mobile: { label: "Incoming", color: "#4ade80" },   // green
+    off:    { label: "Outgoing", color: "#f87171" },   // red
   } satisfies ChartConfig
 
   return (
@@ -105,18 +130,16 @@ export function ChartAreaInteractive() {
       <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
         <ChartContainer config={chartConfig} className="aspect-auto h-[250px] w-full">
           <AreaChart data={filteredData}>
-            <defs>
-              <linearGradient id="fillDesktop" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="var(--color-desktop)" stopOpacity={0.8} />
-                <stop offset="95%" stopColor="var(--color-desktop)" stopOpacity={0.1} />
-              </linearGradient>
-              <linearGradient id="fillMobile" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="var(--color-mobile)" stopOpacity={0.8} />
-                <stop offset="95%" stopColor="var(--color-mobile)" stopOpacity={0.1} />
-              </linearGradient>
-            </defs>
+            {/* Y-axis for positive/negative */}
+            <YAxis
+              domain={['auto', 'auto']}
+              tickLine={false}
+              axisLine={false}
+              tick={{ fill: 'white', fontSize: 12 }}
+              width={40}
+            />
 
-            <CartesianGrid vertical={false} />
+            <CartesianGrid vertical={false} stroke="#333" />
 
             <XAxis
               dataKey="date"
@@ -124,6 +147,10 @@ export function ChartAreaInteractive() {
               axisLine={false}
               tickMargin={8}
               minTickGap={32}
+              tick={{
+                fill: 'white',
+                fontSize: 12,
+              }}
               tickFormatter={(value) =>
                 new Date(value).toLocaleDateString("en-US", {
                   month: "short",
@@ -147,14 +174,37 @@ export function ChartAreaInteractive() {
               }
             />
 
+            <defs>
+              {/* incoming gradient */}
+              <linearGradient id="fillMobile" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%"  stopColor="#4ade80" stopOpacity={0.8} />
+                <stop offset="95%" stopColor="#4ade80" stopOpacity={0.1} />
+              </linearGradient>
+              {/* outgoing gradient */}
+              <linearGradient id="fillOff" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%"  stopColor="#f87171" stopOpacity={0.8} />
+                <stop offset="95%" stopColor="#f87171" stopOpacity={0.1} />
+              </linearGradient>
+            </defs>
+
+            {/* incoming area (green) */}
             <Area
               dataKey="mobile"
               type="natural"
               fill="url(#fillMobile)"
-              stroke="var(--color-mobile)"
-              stackId="a"
+              stroke="#4ade80"
+              connectNulls={false}
             />
-            
+
+            {/* outgoing area (red) */}
+            <Area
+              dataKey="off"
+              type="natural"
+              fill="url(#fillOff)"
+              stroke="#f87171"
+              connectNulls={false}
+            />
+
             <ChartLegend />
           </AreaChart>
         </ChartContainer>

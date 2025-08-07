@@ -1,73 +1,51 @@
-name: Build & Deploy to Google Cloud Run
+name: Build and Deploy to Docker Hub
 
 on:
   push:
     branches:
       - main
-      
-  workflow_dispatch:
 
-env:
-  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-  REGION:     ${{ secrets.GCP_REGION }}
-  AR_HOST:    asia-docker.pkg.dev
-  AR_REPO:    blinkpay
-
-jobs:
+jobs: 
   build:
+    name: Build project and push to Docker Hub
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
+    steps: 
+      - name: Checkout Repository
         uses: actions/checkout@v3
-
-      - name: Set up Google Cloud SDK and activate service account
-        uses: google-github-actions/setup-gcloud@v1
-        with:
-          project_id: ${{ secrets.GCP_PROJECT_ID }}
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
-          export_default_credentials: true
-
-      - name: Show active account (debug)
-        run: gcloud auth list
-
-      - name: Configure Docker credential helper for Artifact Registry
-        run: gcloud auth configure-docker asia-docker.pkg.dev --quiet
-
-      - name: Get access token for Docker login
-        id: auth
-        run: |
-          echo "access_token=$(gcloud auth print-access-token)" >> $GITHUB_OUTPUT
-
-      - name: Docker login to Artifact Registry (fallback for buildx)
+      - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
-          registry: asia-docker.pkg.dev
-          username: oauth2accesstoken
-          password: ${{ steps.auth.outputs.access_token }}
+          username: ${{ secrets.DOCKER_USERID }}
+          password: ${{ secrets.DOCKER_PASS }}
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
 
-      - name: Build & push bankServer
+      - name: Build and push bankServer
         uses: docker/build-push-action@v4
         with:
           context: .
           file: ./apps/bankServer/Dockerfile
-          push: true
-          tags: |
-            ${{ env.AR_HOST }}/${{ env.PROJECT_ID }}/${{ env.AR_REPO }}/blinkpay-bankserver:latest
+          push: true  
+          tags: ogadityahota/blinkpay-bankserver:latest
 
-      - name: Build & push webHook
+      - name: Build and push webHook
         uses: docker/build-push-action@v4
         with:
           context: .
           file: ./apps/webHook/Dockerfile
-          push: true
-          tags: |
-            ${{ env.AR_HOST }}/${{ env.PROJECT_ID }}/${{ env.AR_REPO }}/blinkpay-webhook:latest
+          push: true  
+          tags: ogadityahota/blinkpay-webhook:latest
 
-      - name: Build & push user-app
+      - name: Build and push user-app
         uses: docker/build-push-action@v4
         with:
           context: .
           file: ./apps/user-app/Dockerfile
-          push: true
-          tags: |
-            ${{ env.AR_HOST }}/${{ env.PROJECT_ID }}/${{ env.AR_REPO }}/blinkpay-user-app:latest
+          push: true  
+          tags: ogadityahota/blinkpay-user-app:latest
+      
+      - name: verify and pull
+        run: |
+          docker pull ogadityahota/blinkpay-bankserver:latest
+          docker pull ogadityahota/blinkpay-webhook:latest  
+          docker pull ogadityahota/blinkpay-user-app:latest   

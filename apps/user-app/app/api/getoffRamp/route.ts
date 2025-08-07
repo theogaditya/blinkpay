@@ -21,10 +21,10 @@ export const GET = auth(async function GET(req) {
     let result;
 
     try {
-      result = await prisma.onRamping.findMany({
+      result = await prisma.offRamping.findMany({
         where: { user_id: userid },
         select: {
-          OnRampingStatus: true,
+          OffRampingStatus: true,
           amount: true,
           created_at: true,
           updated_at: true,

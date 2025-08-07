@@ -16,6 +16,7 @@ model User {
   role        Role        @default(User)
   created_at  DateTime    @default(now())
   on_ramping  OnRamping[]
+  off_ramping offRamping[]
   balance     Balance[]
 }
 enum AuthType {
@@ -32,11 +33,39 @@ model OnRamping {
   user_id     Int       
   user        User      @relation(fields: [user_id], references: [id])
   OnRampingStatus OnRampingStatus
-   amount          Float      
-  token     String       @unique
+  amount      Float      
+  token       String       @unique
   created_at  DateTime  @default(now())
   updated_at  DateTime  @updatedAt
   provider    String
+}
+
+model offRamping {
+  id          Int       @id   @default(autoincrement())
+  user_id     Int       
+  user        User      @relation(fields: [user_id], references: [id])
+  OffRampingStatus OffRampingStatus
+  amount      Float      
+  token       String       @unique
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @updatedAt
+  provider    String
+}
+
+model ptopTransfer {
+  id          Int       @id   @default(autoincrement())
+  serderId    Int       
+  reciverId   Int       
+  amount      Float      
+  token       String    @unique
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @updatedAt
+}
+
+enum OffRampingStatus {
+  Processing
+  Approved
+  Rejected
 }
 
 enum OnRampingStatus {
@@ -50,7 +79,7 @@ model Balance{
   user_id     Int       @unique
   user        User      @relation(fields: [user_id], references: [id])
   amount      Float     @default(0)
-  currency    currency
+  currency    currency  @default(INR)
   locked      Int?
   created_at  DateTime  @default(now())
   updated_at  DateTime  @updatedAt

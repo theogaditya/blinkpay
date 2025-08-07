@@ -23,6 +23,9 @@ const TransfersPage = () => {
     }
     window.location.replace('mockHDFC');
   }
+  function sendptp() {
+    window.location.replace('/sendPTP');
+  }
 
 useEffect(() => {
   const fetchBalance = async () => {
@@ -173,7 +176,7 @@ useEffect(() => {
               <h2 className="text-xl font-semibold mb-4">Quick Actions</h2>
 
               <div className="grid grid-cols-2 gap-3">
-                <button className="flex flex-col items-center justify-center bg-gray-800 rounded-xl py-4 hover:bg-gray-700 transition-colors">
+                <button onClick={sendptp} className="flex flex-col items-center justify-center bg-gray-800 rounded-xl py-4 hover:bg-gray-700 transition-colors">
                   <div className="bg-blue-500/20 p-2 rounded-lg mb-2">
                     <Send className="text-blue-400" size={20} />
                   </div>
