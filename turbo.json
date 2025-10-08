@@ -17,5 +17,11 @@
       "cache": false,
       "persistent": true
     }
+  },
+  "pipeline": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": [".next/**", "dist/**"]
+    }
   }
 }

@@ -11,7 +11,7 @@ const nextConfig: NextConfig = {
       }
     ]
   },
-   transpilePackages: ['@repo/db/client'],
+   transpilePackages: ['@repo/db'],
 };
 
 export default nextConfig;
