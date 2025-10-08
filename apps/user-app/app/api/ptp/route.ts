@@ -1,39 +1,39 @@
-// import { NextResponse } from "next/server";
-// import prisma from "@/lib/prisma";
-// import { auth } from "@/lib/auth";
-// // import { PrismaClient, OnRampingStatus } from "@repo/db/client";
-// import jwt, { JwtPayload } from "jsonwebtoken";
+import { NextResponse } from "next/server";
+import prisma from "@/lib/prisma";
+import { auth } from "@/lib/auth";
+// import { PrismaClient, OnRampingStatus } from "@repo/db/client";
+import jwt, { JwtPayload } from "jsonwebtoken";
 
-// const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
+const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
 
-// type incomming = {
-//   amount: number;
-//   email: string;
-// };
-// const secret = process.env.JWT_SECRET || "your-secret-key";
+type incomming = {
+  amount: number;
+  email: string;
+};
+const secret = process.env.JWT_SECRET || "your-secret-key";
 
 
-// export async function GET() {
-//   try {
-//     const users = await prisma.user.findMany({
-//       select: {
-//         email: true,
-//         name: true,
-//       },
-//     });
+export async function GET() {
+  try {
+    const users = await prisma.user.findMany({
+      select: {
+        email: true,
+        name: true,
+      },
+    });
 
-//     return NextResponse.json(
-//       { status: "ok", data: users },
-//       { status: 200 }
-//     );
-//   } catch (error) {
-//     console.error(error);
-//     return NextResponse.json(
-//       { status: "error", message: (error as Error).message },
-//       { status: 503 }
-//     );
-//   }
-// }
+    return NextResponse.json(
+      { status: "ok", data: users },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json(
+      { status: "error", message: (error as Error).message },
+      { status: 503 }
+    );
+  }
+}
 
 // export const POST = auth(async function POST(req) {
 //   if (!req.auth) {
@@ -166,4 +166,4 @@
 //       { status: 500 }
 //     );
 //   }
-// });
+//});
