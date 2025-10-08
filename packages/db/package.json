@@ -6,7 +6,8 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc -b"
+    "build": "tsc -b",
+     "postinstall": "npx prisma generate"
   },
   "keywords": [],
   "author": "",
