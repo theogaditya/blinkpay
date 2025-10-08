@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { auth } from "@/lib/auth";
-import { PrismaClient, OnRampingStatus } from "@repo/db/client";
+// import { PrismaClient, OnRampingStatus } from "@repo/db/client";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
