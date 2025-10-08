@@ -10,7 +10,9 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       }
     ]
-  }
+  },
+   transpilePackages: ['@repo/db'],
 };
 
 export default nextConfig;
+
