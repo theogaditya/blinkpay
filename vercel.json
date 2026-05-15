@@ -1,9 +1,5 @@
 {
-  "builds": [
-    {
-      "src": "apps/user-app/package.json",
-      "use": "@vercel/next"
-    }
-  ],
+  "framework": "nextjs",
+  "installCommand": "npm install",
   "outputDirectory": "apps/user-app/.next"
 }
