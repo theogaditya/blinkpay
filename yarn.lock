@@ -247,10 +247,20 @@
   dependencies:
     fast-glob "3.3.1"
 
+"@next/swc-linux-x64-gnu@15.3.4":
+  version "15.3.5"
+  resolved "https://registry.npmjs.org/@next/swc-linux-x64-gnu/-/swc-linux-x64-gnu-15.3.5.tgz"
+  integrity sha512-2xYU0DI9DGN/bAHzVwADid22ba5d/xrbrQlr2U+/Q5WkFUzeL0TDR963BdrtLS/4bMmKZGptLeg6282H/S2i8A==
+
 "@next/swc-linux-x64-gnu@15.3.5":
   version "15.3.5"
   resolved "https://registry.npmjs.org/@next/swc-linux-x64-gnu/-/swc-linux-x64-gnu-15.3.5.tgz"
   integrity sha512-2xYU0DI9DGN/bAHzVwADid22ba5d/xrbrQlr2U+/Q5WkFUzeL0TDR963BdrtLS/4bMmKZGptLeg6282H/S2i8A==
+
+"@next/swc-linux-x64-musl@15.3.4":
+  version "15.3.5"
+  resolved "https://registry.npmjs.org/@next/swc-linux-x64-musl/-/swc-linux-x64-musl-15.3.5.tgz"
+  integrity sha512-TRYIqAGf1KCbuAB0gjhdn5Ytd8fV+wJSM2Nh2is/xEqR8PZHxfQuaiNhoF50XfY90sNpaRMaGhF6E+qjV1b9Tg==
 
 "@next/swc-linux-x64-musl@15.3.5":
   version "15.3.5"
@@ -619,6 +629,8 @@
 "@repo/db@*", "@repo/db@file:/home/aditya/code/projects/blinkpay/packages/db":
   version "1.0.0"
   resolved "file:packages/db"
+  dependencies:
+    "@prisma/client" "6.11.1"
 
 "@repo/eslint-config@*", "@repo/eslint-config@file:/home/aditya/code/projects/blinkpay/packages/eslint-config":
   version "0.0.0"
@@ -3634,7 +3646,7 @@ next-auth@^5.0.0-beta.29:
     "@next/swc-win32-x64-msvc" "15.3.4"
     sharp "^0.34.1"
 
-next@^15.3.5:
+next@15.3.5:
   version "15.3.5"
   resolved "https://registry.npmjs.org/next/-/next-15.3.5.tgz"
   integrity sha512-RkazLBMMDJSJ4XZQ81kolSpwiCt907l0xcgcpF4xC2Vml6QVcPNXW0NQRwQ80FFtSn7UM52XN0anaw8TEJXaiw==

@@ -12,7 +12,6 @@ const nextConfig: NextConfig = {
     ]
   },
    transpilePackages: ['@repo/db'],
-   runtime: 'nodejs',
 };
 
 export default nextConfig;
