@@ -1,5 +1,6 @@
 {
   "framework": "nextjs",
   "installCommand": "npm install",
+  "buildCommand": "turbo run build --filter=user-app",
   "outputDirectory": "apps/user-app/.next"
 }
